@@ -54,7 +54,7 @@ public class HomeController {
 		model.addAttribute("user", user);  // 하나의 객체로 넘기기
 		return "user";
 		//return ResponseEntity.ok().body(user);
-	}
+	}  
 	@GetMapping("/users/fn")
 	public String getUserByName(@Param(value="name") String name, Model model) {
 		List<User> users = userRepo.findByName(name);
