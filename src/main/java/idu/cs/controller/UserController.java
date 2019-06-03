@@ -61,6 +61,11 @@ public class UserController {
 	public String getRegForm(Model model) {
 		return "register";
 	}
+	@GetMapping("/user-update-form")
+	public String updateForm(Model model, HttpSession session) {
+		return "update";
+	}
+
 	@GetMapping("/users")
 	public String getAllUser(Model model) {
 		model.addAttribute("users", userRepo.findAll());
@@ -68,8 +73,9 @@ public class UserController {
 	}
 	@PostMapping("/users")
 	public String createUser(@Valid User user, Model model) {  // User 앞 @RequestBody 제거
-		if(userRepo.save(user)!=null)
+		if(userRepo.save(user)!=null) {
 			System.out.println("Database 등록 성공");
+		}
 		else 
 			System.out.println("Database 등록 실패");
 		model.addAttribute("users", userRepo.findAll());
@@ -98,11 +104,21 @@ public class UserController {
 	 * 중요한 이유 : 이게 이름?(url?)을 다르게 해서 쓰면 update를 썼나? upload를 썼나? 헷갈릴 수 있다.
 	 */
 	@PutMapping("/users/{id}")  // @PatchMapping : 수정된 것만 고치도록 하는 친구
-	public String updateUser(@PathVariable(value = "id") Long userId, @Valid User userDetails, Model model) { 
+	public String updateUser(@PathVariable(value = "id") Long userId, @Valid User userDetails, Model model, HttpSession session) { 
 		User user = userRepo.findById(userId).get();  // user는 DB로 부터 읽어온 객체
+		user.setUserId(userDetails.getUserId());
+		user.setUserPw(userDetails.getUserPw());
 		user.setName(userDetails.getName());  // userDetails는 전송한 객체
 		user.setCompany(userDetails.getCompany());
 		userRepo.save(user);
+		session.setAttribute("user", user);  
+		/* 
+		 * 
+		 * 
+		 * 일단은 세션을 덮는다.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		 *
+		 *
+		 */
 		return "redirect:/users";
 	}
 	

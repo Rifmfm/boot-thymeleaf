@@ -19,6 +19,10 @@ public class User {
 	private String name;
 	private String company;
 	
+	public User() {
+		
+	}
+	
 	public User(Long id, String userId, String userPw, String name, String company) {
 		super();
 		this.id = id;
