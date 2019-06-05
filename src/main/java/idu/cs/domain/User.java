@@ -1,36 +1,11 @@
 package idu.cs.domain;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "user")
-public class User {
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+// 1차 user  -> 애를 Service가 씀   // 내 설명이 틀릴 수도 있엉....ㅠ
+public class User {  // domain object == dto, vo
 	private Long id; 
-	// database에서 sequence number, primary key 역할
 	private String userId;
 	private String userPw;
-	
 	private String name;
 	private String company;
-	
-	public User() {
-		
-	}
-	
-	public User(Long id, String userId, String userPw, String name, String company) {
-		super();
-		this.id = id;
-		this.userId = userId;
-		this.userPw = userPw;
-		this.name = name;
-		this.company = company;
-	}
 	
 	public Long getId() {
 		return id;

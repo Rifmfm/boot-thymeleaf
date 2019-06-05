@@ -15,14 +15,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import idu.cs.domain.User;
+import idu.cs.entity.UserEntity;
 import idu.cs.exception.ResourceNotFoundException;
 import idu.cs.repository.UserRepository;
+import idu.cs.service.UserService;
 
 @Controller  // Spring Framework에게 이 클래스로 부터 작성된 객체는 Controller 역할을 함을 알려줌
 // Spring이 이 클래스로부터 Bean 객체를 생성해서 등록할 수 있음
 public class UserController {
-	@Autowired UserRepository userRepo; // Dependency Injection
+	@Autowired UserService userService;
+	//@Autowired UserRepository userRepo; // Dependency Injection
 	// UserRepository를 userRepo에 Autowired해줘
 	
 	// 전체 돌아가는 상황을 알자!
@@ -36,10 +38,11 @@ public class UserController {
 	public String getLoginForm(Model model) {
 		return "login";
 	}
+/*
 	@PostMapping("/login")
-	public String loginUser(@Valid User user, HttpSession session) { // 로그인할때 여기를 지나감
+	public String loginUser(@Valid UserEntity user, HttpSession session) { // 로그인할때 여기를 지나감
 		System.out.println("님 login 성공");
-		User sessionUser = userRepo.findByUserId(user.getUserId());
+		UserEntity sessionUser = userRepo.findByUserId(user.getUserId());
 		if(sessionUser == null) {
 			System.out.println("id error");
 			return "redirect:/user-login-form";
@@ -64,15 +67,23 @@ public class UserController {
 	@GetMapping("/user-update-form")
 	public String updateForm(Model model, HttpSession session) {
 		return "update";
-	}
+	}*/
 
+	// 이러한 방식이 더 좋아서 바꾸느라고 다 주석처리 해버림
 	@GetMapping("/users")
-	public String getAllUser(Model model) {
-		model.addAttribute("users", userRepo.findAll());
+	public String getAllUser(Model model, HttpSession session) {
+		model.addAttribute("users", userService.getUsers());
 		return "userlist";
 	}
+	/*
+	@GetMapping("/users")
+	public String getAllUser(Model model) {
+		model.addAttribute("users", userService.getUsers());
+		return "/users/list";
+	}	*/
+	/*
 	@PostMapping("/users")
-	public String createUser(@Valid User user, Model model) {  // User 앞 @RequestBody 제거
+	public String createUser(@Valid UserEntity user, Model model) {  // User 앞 @RequestBody 제거
 		if(userRepo.save(user)!=null) {
 			System.out.println("Database 등록 성공");
 		}
@@ -83,7 +94,7 @@ public class UserController {
 	}
 	@GetMapping("/users/{id}")  // 오류 해결방법 찾기 : ctrl + 1
 	public String getUserById(@PathVariable(value = "id") Long userId, Model model) throws ResourceNotFoundException {
-		User user = userRepo.findById(userId).get(); 
+		UserEntity user = userRepo.findById(userId).get(); 
 				//orElseThrow는 에러처리를 내가 지정 가능<-.orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
 		//() -> new Resource..." + userId) = 람다식 (함수형 인터페이스)
 		//model.addAttribute("id", user.getId());  // user.getID = userId  아이디를 넘김
@@ -93,7 +104,7 @@ public class UserController {
 	}  
 	@GetMapping("/users/fn")
 	public String getUserByName(@Param(value="name") String name, Model model) {
-		List<User> users = userRepo.findByName(name);
+		List<UserEntity> users = userRepo.findByName(name);
 		model.addAttribute("users",users);
 		return "userlist";
 	}
@@ -102,10 +113,10 @@ public class UserController {
 	 * 메소드 방식에 따라 다르게 동작 시킬 것이다. - Restfull방식
 	 * 자원 중심 : 자원의 현상태를 전송하자  ex) get방식, put방식에 따라 다르게 동작
 	 * 중요한 이유 : 이게 이름?(url?)을 다르게 해서 쓰면 update를 썼나? upload를 썼나? 헷갈릴 수 있다.
-	 */
+	 *//*
 	@PutMapping("/users/{id}")  // @PatchMapping : 수정된 것만 고치도록 하는 친구
-	public String updateUser(@PathVariable(value = "id") Long userId, @Valid User userDetails, Model model, HttpSession session) { 
-		User user = userRepo.findById(userId).get();  // user는 DB로 부터 읽어온 객체
+	public String updateUser(@PathVariable(value = "id") Long userId, @Valid UserEntity userDetails, Model model, HttpSession session) { 
+		UserEntity user = userRepo.findById(userId).get();  // user는 DB로 부터 읽어온 객체
 		user.setUserId(userDetails.getUserId());
 		user.setUserPw(userDetails.getUserPw());
 		user.setName(userDetails.getName());  // userDetails는 전송한 객체
@@ -118,16 +129,16 @@ public class UserController {
 		 * 일단은 세션을 덮는다.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		 *
 		 *
-		 */
+		 *//*
 		return "redirect:/users";
 	}
 	
 	@DeleteMapping("/users/{id}")
 	public String deleteUser(@PathVariable(value = "id") Long userId, Model model) {
 	// @PathVariable(value = "id") Long userId = id를 가져오기
-		User user = userRepo.findById(userId).get();
+		UserEntity user = userRepo.findById(userId).get();
 		userRepo.delete(user);
 		model.addAttribute("name", user.getName());
 		return "user-deleted";
-	}
+	}*/
 }
