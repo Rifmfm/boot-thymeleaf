@@ -17,5 +17,5 @@ public interface UserService {
 	
 	void saveUser(User user); // 생성
 	void updateUser(User user); // 수정
-	void deleteUser(long id); // 삭제
+	void deleteUser(User user); // 삭제
 }
