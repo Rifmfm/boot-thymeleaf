@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import idu.cs.domain.User;
 import idu.cs.entity.UserEntity;
 import idu.cs.exception.ResourceNotFoundException;
 import idu.cs.repository.UserRepository;
@@ -38,11 +39,11 @@ public class UserController {
 	public String getLoginForm(Model model) {
 		return "login";
 	}
-/*
+
 	@PostMapping("/login")
 	public String loginUser(@Valid UserEntity user, HttpSession session) { // 로그인할때 여기를 지나감
 		System.out.println("님 login 성공");
-		UserEntity sessionUser = userRepo.findByUserId(user.getUserId());
+		User sessionUser = userService.getUserByUserId(user.getUserId());
 		if(sessionUser == null) {
 			System.out.println("id error");
 			return "redirect:/user-login-form";
@@ -54,6 +55,7 @@ public class UserController {
 		session.setAttribute("user", sessionUser);
 		return "redirect:/";
 	}
+	
 	@GetMapping("/logout")
 	public String logoutUser(HttpSession session) {
 		session.removeAttribute("user");
@@ -65,9 +67,23 @@ public class UserController {
 		return "register";
 	}
 	@GetMapping("/user-update-form")
-	public String updateForm(Model model, HttpSession session) {
-		return "update";
-	}*/
+	public String getupdateForm(Model model, HttpSession session) {
+		// 서비스를 통해 리파지터리로 부터 정보를 가져와야 하나 세션에 저장해두었으므로 활용함
+		User user = (User) session.getAttribute("user");
+		model.addAttribute("user", user);
+		/*User sessionUser = userService.getUserById(user.getId());
+		model.addAttribute("user", sessionUser);*/
+		return "info";
+	}
+	
+	@PutMapping("/users/{id}")
+	public String updateUser(@PathVariable(value = "id") Long id, @Valid User user, Model model, HttpSession session) { 
+		// updtaeUser 객체는 입력 폼의 내용 - id값이 없음
+		user.setId(userService.getUserById(id).getId());
+		userService.updateUser(user);
+		session.setAttribute("user", user);
+		return "redirect:/users";
+	}
 
 	// 이러한 방식이 더 좋아서 바꾸느라고 다 주석처리 해버림
 	@GetMapping("/users")
@@ -81,17 +97,13 @@ public class UserController {
 		model.addAttribute("users", userService.getUsers());
 		return "/users/list";
 	}	*/
-	/*
+	
 	@PostMapping("/users")
-	public String createUser(@Valid UserEntity user, Model model) {  // User 앞 @RequestBody 제거
-		if(userRepo.save(user)!=null) {
-			System.out.println("Database 등록 성공");
-		}
-		else 
-			System.out.println("Database 등록 실패");
-		model.addAttribute("users", userRepo.findAll());
-		return "redirect:/users";
+	public String createUser(@Valid User user, Model model) {  // User 앞 @RequestBody 제거
+		userService.saveUser(user);
+		return "redirect:/users";  // get 방식으로 해당 url로  재지정(redirect)
 	}
+	/*
 	@GetMapping("/users/{id}")  // 오류 해결방법 찾기 : ctrl + 1
 	public String getUserById(@PathVariable(value = "id") Long userId, Model model) throws ResourceNotFoundException {
 		UserEntity user = userRepo.findById(userId).get(); 
@@ -122,14 +134,7 @@ public class UserController {
 		user.setName(userDetails.getName());  // userDetails는 전송한 객체
 		user.setCompany(userDetails.getCompany());
 		userRepo.save(user);
-		session.setAttribute("user", user);  
-		/* 
-		 * 
-		 * 
-		 * 일단은 세션을 덮는다.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		 *
-		 *
-		 *//*
+
 		return "redirect:/users";
 	}
 	
