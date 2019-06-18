@@ -21,12 +21,9 @@ import idu.cs.exception.ResourceNotFoundException;
 import idu.cs.repository.UserRepository;
 import idu.cs.service.UserService;
 
-@Controller  // Spring Framework에게 이 클래스로 부터 작성된 객체는 Controller 역할을 함을 알려줌
-// Spring이 이 클래스로부터 Bean 객체를 생성해서 등록할 수 있음
+@Controller  // Spring Framework에게 이 클래스로 부터 작성된 객체는 Controller 역할을 함을 알려줌  Spring이 이 클래스로부터 Bean 객체를 생성해서 등록할 수 있음
 public class UserController {
-	@Autowired UserService userService;
-	//@Autowired UserRepository userRepo; // Dependency Injection
-	// UserRepository를 userRepo에 Autowired해줘
+	@Autowired UserService userService;	// 의존성 주입 : UserRepository를 userRepo에 Autowired해줘
 	
 	// 전체 돌아가는 상황을 알자!
 	// 뭘 누르면 뭐로 가고 그래서 뭐가 나오는지? 돌아가는 느낌 적인 느낌 느낌!

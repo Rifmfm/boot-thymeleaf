@@ -30,21 +30,41 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User getUserByUserId(String userId) {  // DB로 부터 가져와라 가져와서 바꿔라
-		// DB, repository에서 가져와 Entiry에 저장
-		// UserReposutory에 findByUserId()가 선업되어야 한다.
-		UserEntity entity = repository.findByUserId(userId);
-		// Entity를 Service, Controller에서 사용하기 위해 Domain으로 변환
+		// DB, repository에서 가져와 Entiry에 저장   UserReposutory에 findByUserId()가 선언
+		UserEntity entity = repository.findByUserId(userId);  // Entity를 Service, Controller에서 사용하기 위해 Domain으로 변환
 		User user = entity.buildDomain();
 		return user;
 	}
+	
+	/*
+	 	public List<User> getUsers(PageRequest pageRequest) {
+		List<User> users = new ArrayList<User>();
+		Page<UserEntity> entities = repository.findAll(pageRequest);
+		for(UserEntity entity : entities) {
+			User user = entity.buildDomain();
+			users.add(user);
+		}
+		return users;
+	}
+	
+	@Override
+	public List<User> getUsers(Long pageNo) {
+		PageRequest pageRequest = PageRequest.of((int) (pageNo - 1), 3, new Sort(Sort.Direction.DESC, "id"));
+		Page<UserEntity> entities = repository.findAll(pageRequest);
+		List<User> users = new ArrayList<User>();
+		for(UserEntity entity : entities) {
+			User user = entity.buildDomain();
+			users.add(user);
+		}
+		return users;
+	}
+	*/
 
 	@Override
 	public List<User> getUsers() { 
 		List<User> users = new ArrayList<User>();
 		List<UserEntity> entities = repository.findAll();
-		for(UserEntity entity : entities) {
-			/*
-			 * entity -> domain으로 변환하는 곳*/
+		for(UserEntity entity : entities) {  /* entity -> domain으로 변환하는 곳 */
 			User user = entity.buildDomain();
 			users.add(user);
 		}
@@ -70,12 +90,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void saveUser(User user) {
+	public void saveUser(User user) {   /* domain -> entity로 변환 */
 		UserEntity entity = new UserEntity();
-		/*
-		 * domain-user 객체를 entity-userEntity 생성
-		 * DB저장을 위해 repository가 Entity를 필요로 함
-		 */
 		entity.buildEntity(user);
 		repository.save(entity);
 	}
@@ -89,8 +105,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void deleteUser(User user) {
-		// TODO Auto-generated method stub
-
+		UserEntity entity = new UserEntity();
+		entity.buildEntity(user);
+		repository.delete(entity);
 	}
 
+	/*
+	 * domain-user 객체를 entity-userEntity 생성
+	 * DB저장을 위해 repository가 Entity를 필요로 하기 때문에 Entity로 변환
+	 */
 }
