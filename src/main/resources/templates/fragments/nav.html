@@ -29,15 +29,12 @@
 	                                    <a class="nav-link" href="/logout">Logout</a>
 	                                </li>
 	                                <li th:if="${session.user}" class="nav-item">
-	                                    <a class="nav-link" th:href="@{'/users/{id}'(id=${session.user.id})}" ><span th:text="${session.user.userId}"></span>의 Info</a>
+	                                    <a class="nav-link" th:href="@{'/users/{id}'(id=${session.user.id})}" ><span th:text="${session.user.userId}"></span> Info</a>
+	                                </li>
+	                                <li th:if="${session.user}" class="nav-item">
+	                                    <a class="nav-link" href="/questions">Question</a>
 	                                </li>
 	                                
-                                <li class="nav-item">
-                                    <a class="nav-link" href="project.html">Portfolio</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="blog.html">Blog</a>
-                                </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         pages

@@ -1,6 +1,8 @@
 package idu.cs.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,30 +11,34 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import idu.cs.domain.Question;
-import idu.cs.domain.User;
 
 @Entity
 @Table(name = "question")
 public class QuestionEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long id; 
-	// database에서 sequence number, primary key 역할
+	private Long id;  // primary key
 	
 	private String title;
 	
-	@ManyToOne
-	@JoinColumn(name="fk_question_writer")  // 패스 : 우리가 값을 못넣으면 자동으로 이상한 값이 들어간다?
-	private UserEntity writer;   // 패스 : 글 쓴 사람이 자동으로 추가되어야해!
+	@ManyToOne  // N:1 관계(단방향) : 사람 한명이 여러개의 Question 작성 가능
+	@JoinColumn(name="fk_question_writer")  // 외래키 fk_question_writer와 매핑 : 로그인한 사람만 작성 가능
+	private UserEntity writer;   // !!!!UserEntitiy다. 자동으로 값이 들어감
+	
+	@OneToMany(mappedBy="question")  // 여러개의 answer값을 가질 수 있다.
+	@OrderBy("createTime DESC")
+	private List<AnswerEntity> answers = new ArrayList<AnswerEntity>();
 	
 	@Lob
 	private String contents;
 	private LocalDateTime createTime;
 	
-	public Question builedDomain() {  
+	public Question buildDomain() {  
 		Question question = new Question();
 		question.setId(id);
 		question.setTitle(title);
@@ -55,6 +61,14 @@ public class QuestionEntity {
 		createTime = question.getCreateTime();
 	}
 	
+	public List<AnswerEntity> getAnswers() {
+		return answers;
+	}
+
+	public void setAnswers(List<AnswerEntity> answers) {
+		this.answers = answers;
+	}
+
 	public Long getId() {
 		return id;
 	}

@@ -1,24 +1,32 @@
 package idu.cs.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import idu.cs.entity.UserEntity;
 
-// 1차 user  -> 애를 Service가 씀   // 내 설명이 틀릴 수도 있엉....ㅠ
-public class Question {  // domain object == dto, vo
+public class Question {
 	private Long id; 	
 	private String title;
 	private User writer;
 	private String contents;
 	private LocalDateTime createTime;
+	private List<Answer> answers;
 	
 	public Question() {}  // 생성자 필수!!!!!!!!!!!! 생성자를 추가한 경우 디폴트 생성자를 생성해야함
-	public Question(String title, User writer, String contents, LocalDateTime createTime) {
+	public Question(String title, User writer, String contents) {
 		super();
 		this.title = title;
 		this.writer = writer;
 		this.contents = contents;
 		this.createTime = LocalDateTime.now();
+	}
+	
+	public List<Answer> getAnswers() {
+		return answers;
+	}
+	public void setAnswers(List<Answer> answers) {
+		this.answers = answers;
 	}
 	
 	public Long getId() {

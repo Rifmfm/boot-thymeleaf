@@ -62,5 +62,11 @@ public class HomeController {
 		return "/users/register";
 	}
 	
+	@GetMapping("/questions/form")
+	public String getQuestionForm(HttpSession session, Model model) {
+		User writer = (User) session.getAttribute("user");
+		model.addAttribute("writer", writer);
+		return "/questions/register";
+	}
 	
 }
