@@ -2,15 +2,15 @@ package idu.cs.domain;
 
 import java.time.LocalDateTime;
 
-public class Answer {
+public class Comment {
 	private long id; // primary key
 	private User writer; // 글 작성자
 	private Question question;
 	private String contents;
 	private LocalDateTime createTime;	
 	
-	public Answer() {}
-	public Answer(User writer, Question question, String contents) {
+	public Comment() {}
+	public Comment(User writer, Question question, String contents) {
 		super();
 		this.writer = writer;
 		this.question = question;

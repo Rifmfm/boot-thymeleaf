@@ -3,6 +3,8 @@ package idu.cs.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import idu.cs.domain.Answer;
+import idu.cs.domain.Comment;
 import idu.cs.domain.Question;
 import idu.cs.domain.User;
 import idu.cs.service.QuestionService;
@@ -26,6 +28,8 @@ public class QuestionController {
 	
 	@GetMapping("")  // list
 	public String getAllQuestion(Model model, HttpSession session) {
+		if (session.getAttribute("user")==null)
+			return "/users/login";
 		List<Question> questions = questionService.getQuestions();
 		model.addAttribute("questions", questions);
 		return "/questions/list";
@@ -42,7 +46,9 @@ public class QuestionController {
 	}
 	
 	@GetMapping("/{id}")  // view, info Question
-	public String getQuestion(@PathVariable(value = "id") Long id, Model model) {
+	public String getQuestion(@PathVariable(value = "id") Long id, Model model, HttpSession session) {
+		if (session.getAttribute("user")==null)
+			return "/users/login";
 		Question question = questionService.getQuestionById(id);  // getQuestionById에서 answer데이터도 같이 불러옴
 		model.addAttribute("question", question);
 		return "/questions/info";
@@ -52,12 +58,14 @@ public class QuestionController {
 	public String getupdateForm(@PathVariable(value="id") Long id, Model model) {
 		Question question = questionService.getQuestionById(id);
 		model.addAttribute("question", question);
-		return "/questions/info";
+		return "/questions/edit";
 	}
 	
 	@PutMapping("/{id}")  // update
-	public String updateQuestion(@PathVariable(value = "id") Long id, String title, String contents, Model model) {
+	public String updateQuestion(@PathVariable(value = "id") Long id, @Valid Question formquestion, Model model) {
 		Question question = questionService.getQuestionById(id);
+		question.setTitle(formquestion.getTitle());
+		question.setContents(formquestion.getContents());
 		questionService.updateQuestion(question);		
 		return "redirect:/questions/" + id;
 	}
@@ -67,6 +75,6 @@ public class QuestionController {
 		Question question = questionService.getQuestionById(id);
 		questionService.deleteQuestion(question);
 		model.addAttribute("userId", question.getWriter().getUserId());
-		return "/questions/delete";
+		return "redirect:/questions";
 	}
 }

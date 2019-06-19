@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,9 +31,9 @@ public class QuestionEntity {
 	@JoinColumn(name="fk_question_writer")  // 외래키 fk_question_writer와 매핑 : 로그인한 사람만 작성 가능
 	private UserEntity writer;   // !!!!UserEntitiy다. 자동으로 값이 들어감
 	
-	@OneToMany(mappedBy="question")  // 여러개의 answer값을 가질 수 있다.
+	@OneToMany(mappedBy="question", cascade = CascadeType.ALL, orphanRemoval = true)  // 여러개의 answer값을 가질 수 있다.
 	@OrderBy("createTime DESC")
-	private List<AnswerEntity> answers = new ArrayList<AnswerEntity>();
+	private List<CommentEntity> answers = new ArrayList<CommentEntity>();
 	
 	@Lob
 	private String contents;
@@ -61,11 +62,11 @@ public class QuestionEntity {
 		createTime = question.getCreateTime();
 	}
 	
-	public List<AnswerEntity> getAnswers() {
+	public List<CommentEntity> getAnswers() {
 		return answers;
 	}
 
-	public void setAnswers(List<AnswerEntity> answers) {
+	public void setAnswers(List<CommentEntity> answers) {
 		this.answers = answers;
 	}
 

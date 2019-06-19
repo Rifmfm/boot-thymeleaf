@@ -11,7 +11,7 @@ public class Question {
 	private User writer;
 	private String contents;
 	private LocalDateTime createTime;
-	private List<Answer> answers;
+	private List<Comment> comments;
 	
 	public Question() {}  // 생성자 필수!!!!!!!!!!!! 생성자를 추가한 경우 디폴트 생성자를 생성해야함
 	public Question(String title, User writer, String contents) {
@@ -22,11 +22,11 @@ public class Question {
 		this.createTime = LocalDateTime.now();
 	}
 	
-	public List<Answer> getAnswers() {
-		return answers;
+	public List<Comment> getComments() {
+		return comments;
 	}
-	public void setAnswers(List<Answer> answers) {
-		this.answers = answers;
+	public void setAnswers(List<Comment> comments) {
+		this.comments = comments;
 	}
 	
 	public Long getId() {

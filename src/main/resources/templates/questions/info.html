@@ -49,8 +49,10 @@
                </div>
                <div class="navigation-top">
                   <div class="d-sm-flex justify-content-between text-center">
-                     <p class="like-info"><span class="align-middle"><i class="far fa-heart"></i></span> Lily and 4
-                        people like this</p>
+                     <a class="nav-link" th:if="${session.user.id}==${question.writer.id}" th:href="@{'/questions/{id}/form'(id=${question.id})}" >수정하기</a>
+                     <form th:action="@{'/questions/{id}'(id=${question.id})}" th:method="delete" th:if="${session.user.id}==${question.writer.id}">
+				          <button type="submit" class="button button-contactForm btn_4">삭제하기</button>
+					 </form>
                      <div class="col-sm-4 text-center my-2 my-sm-0">
                         <!-- <p class="comment-count"><span class="align-middle"><i class="far fa-comment"></i></span> 06 Comments</p> -->
                      </div>
@@ -118,7 +120,7 @@
                <div class="comments-area">
                   <h4><a name="comment-area"></a>Comments</h4>
  
-                  <div class="comment-list" th:each="answer : ${question.answers}">
+                  <div class="comment-list" th:each="comment : ${question.comments}">
                      <div class="single-comment justify-content-between d-flex">
                         <div class="user justify-content-between d-flex">
                            <div class="thumb">
@@ -126,19 +128,22 @@
                            </div>
                            <div class="desc">
                               <p class="comment">
-                                 <span th:text="${answer.contents}"></span>
+                                 <span th:text="${comment.contents}"></span>
                               </p>
                               <div class="d-flex justify-content-between">
                                  <div class="d-flex align-items-center">
                                     <h5>
-                                       <a href="#"><span th:text="${answer.writer.userId}"></span></a>
+                                       <a href="#"><span th:text="${comment.writer.userId}"></span></a>
                                     </h5>
-                                    <p class="date"><span th:text="${#temporals.format(answer.createTime, 'yy년 MM월 dd일 HH:mm')}"></span></p>
+                                    <p class="date"><span th:text="${#temporals.format(comment.createTime, 'yy년 MM월 dd일 HH:mm')}"></span></p>
                                  </div>
-                                 <div class="reply-btn">
-                                    <a href="#" class="btn-reply text-uppercase">reply</a>
-                                 </div>
+                                 <!--<div class="reply-btn">
+                                    <form th:action="@{'/questions/{questionid}/comment/{id}'(questionid=${question.id}, id=${comment.id})}" th:method="delete" th:if="${session.user.id}==${question.writer.id}">
+							          <button type="submit" class="button button-contactForm btn_4">삭제</button>
+								 	</form>
+                                 </div>-->
                               </div>
+
                            </div>
                         </div>
                      </div>
@@ -147,7 +152,7 @@
                </div>
                <div class="comment-form">
                   <h4>Leave a Reply</h4>
-                  <form class="form-contact comment_form" th:action="@{'/questions/{id}/answers'(id=${question.id})}" method="post" id="commentForm">
+                  <form class="form-contact comment_form" th:action="@{'/questions/{id}/comment'(id=${question.id})}" method="post" id="commentForm">
                      <div class="row">
                         <div class="col-12">
                            <div class="form-group">

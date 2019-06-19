@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import idu.cs.domain.Answer;
+import idu.cs.domain.Comment;
 import idu.cs.domain.Question;
-import idu.cs.entity.AnswerEntity;
+import idu.cs.entity.CommentEntity;
 import idu.cs.entity.QuestionEntity;
 import idu.cs.repository.QuestionRepository;
 
@@ -24,8 +24,8 @@ public class QuestionServiceImpl implements QuestionService {
 		Question question = entity.buildDomain();
 		
 		// QuestionEntity객체로부터 AnswerEntity Arraylist를 가져와서 Domain(?) Arraylist로 변환
-		List<Answer> answerList = new ArrayList<Answer>();
-		for(AnswerEntity answerEntity : entity.getAnswers())
+		List<Comment> answerList = new ArrayList<Comment>();
+		for(CommentEntity answerEntity : entity.getAnswers())
 			answerList.add(answerEntity.buildDomain());
 		question.setAnswers(answerList);
 		return question;
